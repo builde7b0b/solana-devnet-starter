@@ -1,53 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
-import { clusterApiUrl, Connection } from '@solana/web3.js';
-import { WalletProvider, useWallet } from '@solana/wallet-adapter-react';
+// CustomWalletConnection.js
+import React, { useMemo } from 'react';
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import '@solana/wallet-adapter-react-ui/styles.css';
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
+import { clusterApiUrl } from '@solana/web3.js';
+import { WalletContextProvider } from './WalletContext';
 
-const CustomWalletConnection = ({ children }) => {
-  const network = 'mainnet-beta';
-  const endpoint = clusterApiUrl(network);
-  const [wallets, setWallets] = useState([]);
-  const [connection, setConnection] = useState(null);
-
-  useEffect(() => {
-    // Initialize wallets
-    setWallets([
-      new PhantomWalletAdapter(),
-      // Add other wallets if needed
-    ]);
-  }, []);
-
-  useEffect(() => {
-    // Initialize the connection
-    const connectionInstance = new Connection(endpoint, 'confirmed');
-    setConnection(connectionInstance);
-  }, [endpoint]);
-
-  // Example function to check wallet connection status
-  const TestConnection = () => {
-    const { connected, publicKey } = useWallet();
-
-    useEffect(() => {
-      if (connected) {
-        console.log('Wallet connected:', publicKey.toBase58());
-      } else {
-        console.log('Wallet not connected');
-      }
-    }, [connected, publicKey]);
-
-    return <div>{connected ? `Connected: ${publicKey.toBase58()}` : 'Not connected'}</div>;
-  };
+export const CustomWalletConnection = ({ children }) => {
+  const network = WalletAdapterNetwork.Mainnet;
+  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  const wallets = useMemo(() => [new PhantomWalletAdapter()], []);
 
   return (
-    <WalletProvider wallets={wallets} autoConnect>
-      <WalletModalProvider>
-        {/* <WalletMultiButton /> */}
-        {/* <TestConnection /> */}
-        {children}
-      </WalletModalProvider>
-    </WalletProvider>
+    <ConnectionProvider endpoint={endpoint}>
+      <WalletProvider wallets={wallets} autoConnect>
+        <WalletModalProvider>
+          <WalletContextProvider>
+            <WalletMultiButton />
+            {children}
+          </WalletContextProvider>
+        </WalletModalProvider>
+      </WalletProvider>
+    </ConnectionProvider>
   );
 };
 

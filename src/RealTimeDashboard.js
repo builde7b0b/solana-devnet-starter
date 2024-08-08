@@ -1,49 +1,91 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Container, Typography, Box, Button, CircularProgress, Grid } from '@mui/material';
 import * as THREE from 'three';
 import { Canvas, useFrame } from '@react-three/fiber';
 
-// Futuristic 3D Token Representation
-const TokenSphere = ({ value, color }) => {
-  const mesh = React.useRef();
-  useFrame(() => (mesh.current.rotation.x = mesh.current.rotation.y += 0.01));
+const PieSlice = ({ startAngle, endAngle, radius, color }) => {
+  const geometry = useMemo(() => {
+    const shape = new THREE.Shape();
+    shape.moveTo(0, 0);
+    shape.arc(0, 0, radius, startAngle, endAngle, false);
+    shape.lineTo(0, 0);
+    return new THREE.ShapeGeometry(shape, 32);
+  }, [startAngle, endAngle, radius]);
+
   return (
-    <mesh ref={mesh}>
-      <sphereGeometry args={[value, 32, 32]} />
-      <meshStandardMaterial color={color} />
+    <mesh geometry={geometry}>
+      <meshStandardMaterial color={color} side={THREE.DoubleSide} />
     </mesh>
   );
 };
 
-const RealTimeDashboard = ({ apiUrl, headers, accountPubkey, tokenAccountPubkey }) => {
-  const [balance, setBalance] = useState(null);
-  const [tokenAccountBalance, setTokenAccountBalance] = useState(null);
+
+const TokenPieChart = ({ tokens }) => {
+  const mesh = React.useRef();
+  const totalValue = tokens.reduce((sum, token) => sum + token.balance, 0);
+
+  useFrame(() => {
+    if (mesh.current) {
+      mesh.current.rotation.y += 0.005;
+    }
+  });
+
+  console.log('Tokens received in PieChart:', JSON.stringify(tokens, null, 2));
+
+  const MIN_ANGLE = 0.1; // Minimum angle in radians for small slices
+  const SPACING = 0.02; // Spacing between slices in radians
+
+  let startAngle = 0;
+  const adjustedTokens = tokens.map(token => ({
+    ...token,
+    angle: Math.max(MIN_ANGLE, (token.balance / totalValue) * (Math.PI * 2 - SPACING * tokens.length))
+  }));
+
+  console.log("ADJUSTED" + adjustedTokens);
+
+  const totalAdjustedAngle = adjustedTokens.reduce((sum, token) => sum + token.angle, 0);
+
+  return (
+    <group ref={mesh}>
+      {adjustedTokens.map((token, index) => {
+        const endAngle = startAngle + token.angle;
+        const color = token.symbol === 'SOL' 
+  ? '#9945FF' 
+  : `hsl(${(index * 137.5 + 60) % 360}, 70%, 60%)`; // Added 60 to shift the hue
+
+        console.log(`Rendering slice for ${token.symbol}: Color=${color}, Angle=${token.angle}`);
+
+        const slice = (
+          <PieSlice
+            key={token.symbol}
+            startAngle={startAngle + SPACING / 2}
+            endAngle={endAngle - SPACING / 2}
+            radius={5}
+            color={color}
+          />
+        );
+
+        startAngle = endAngle;
+        return slice;
+      })}
+    </group>
+  );
+};
+
+const RealTimeDashboard = ({ apiUrl, headers, accountPubkey, connection }) => {
+  const REQUIRED_TOKEN_ADDRESS = '4RumoqmFmbX1EATWFPuVD75MGK1UxxUqJBbn4tuSpump';
+
+  const [solBalance, setSolBalance] = useState(null);
+  const [tokenHoldings, setTokenHoldings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [solPriceUsd, setSolPriceUsd] = useState(null);
-  const [tokenHoldings, setTokenHoldings] = useState([]);
+  const [isTokenGated, setIsTokenGated] = useState(false);
 
-
-
-  const fetchSolPrice = async () => {
-    try {
-      const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd');
-      console.log(response.JSON);
-      // return response.data.solana.usd;
-    } catch (error) {
-      console.error('Error fetching SOL price:', error);
-      return null;
-    }
-  };
-
-  const fetchBalance = async () => {
+  const fetchSolBalance = async () => {
     try {
       const response = await fetch(apiUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...headers,
-        },
+        headers: headers,
         body: JSON.stringify({
           jsonrpc: "2.0",
           id: 1,
@@ -51,46 +93,19 @@ const RealTimeDashboard = ({ apiUrl, headers, accountPubkey, tokenAccountPubkey 
           params: [accountPubkey],
         }),
       });
-
+  
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
+  
       const result = await response.json();
-      setBalance(result.result.value / 1e9); // Convert lamports to SOL
+      setSolBalance(result.result.value / 1e9); // Convert lamports to SOL
     } catch (error) {
+      console.error('Error fetching SOL balance:', error);
       setError(error.message);
     }
   };
 
-  const fetchTokenAccountBalance = async () => {
-    try {
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...headers,
-        },
-        body: JSON.stringify({
-          jsonrpc: "2.0",
-          id: 1,
-          method: "getTokenAccountBalance",
-          params: [tokenAccountPubkey],
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      setTokenAccountBalance(result.result.value.uiAmount);
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
   const fetchTokenAccounts = async () => {
     try {
       const response = await fetch(apiUrl, {
@@ -110,36 +125,33 @@ const RealTimeDashboard = ({ apiUrl, headers, accountPubkey, tokenAccountPubkey 
           ],
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
+
       const result = await response.json();
       console.log('Token accounts response:', result);
-  
+
       if (result && result.result && result.result.value) {
         const tokenAccounts = result.result.value;
         console.log('Token accounts:', tokenAccounts);
-  
-        const holdings = await Promise.all(tokenAccounts.map(async (account) => {
-          console.log('Processing account:', account);
-          const mintAddress = account.account.data.parsed.info.mint;
-          const balance = account.account.data.parsed.info.tokenAmount.uiAmount;
-  
-          // Fetch token metadata (you might need to implement this)
-          const metadata = await fetchTokenMetadata(mintAddress);
-  
+
+        const holdings = tokenAccounts.map(account => {
+          const { mint, tokenAmount } = account.account.data.parsed.info;
           return {
-            mint: mintAddress,
-            balance: balance,
-            symbol: metadata?.symbol || 'Unknown',
-            name: metadata?.name || 'Unknown Token',
+            mint,
+            balance: tokenAmount.uiAmount,
+            symbol: 'UNKNOWN', // You might want to fetch this information separately
+            name: 'Unknown Token',
           };
-        }));
-  
+        });
+
         console.log('Processed holdings:', holdings);
         setTokenHoldings(holdings);
+        //Check if the user has the required token
+      const hasRequiredToken = holdings.some(token => token.mint === REQUIRED_TOKEN_ADDRESS && token.balance > 0);
+      setIsTokenGated(hasRequiredToken);
       } else {
         console.error('Unexpected response structure:', result);
         setError('Unexpected response structure from API');
@@ -153,27 +165,23 @@ const RealTimeDashboard = ({ apiUrl, headers, accountPubkey, tokenAccountPubkey 
   };
 
   useEffect(() => {
-    setLoading(true);
-    fetchBalance();
-    fetchTokenAccountBalance();
-    fetchTokenAccounts();
-  }, [apiUrl, accountPubkey, tokenAccountPubkey]);
-
-  useEffect(() => {
-    fetchSolPrice().then(price => setSolPriceUsd(price));
-  }, []);
+    if (accountPubkey) {
+      setLoading(true);
+      fetchSolBalance();
+      fetchTokenAccounts();
+    }
+  }, [accountPubkey]);
 
   if (loading) return <CircularProgress />;
 
   const portfolioData = [
-    { symbol: 'SOL', balance: balance || 0 },
-    { symbol: 'CORSAIR', balance: tokenAccountBalance || 0 },
-    ...tokenHoldings
+    { symbol: 'SOL', balance: solBalance || 0 },
+    ...tokenHoldings.filter(token => token.symbol !== 'SOL') // Ensure we don't duplicate SOL
   ];
 
-  const totalValue = (balance || 0) + (tokenAccountBalance || 0);
-  const totalValueUsd = solPriceUsd ? (balance || 0) * solPriceUsd + (tokenAccountBalance || 0) * estimatedTokenPrice : null || 0;
+  const totalValue = portfolioData.reduce((sum, token) => sum + token.balance, 0);
 
+  console.log('Portfolio Data:', portfolioData); // Add this line for debugging
 
 
   return (
@@ -190,29 +198,24 @@ const RealTimeDashboard = ({ apiUrl, headers, accountPubkey, tokenAccountPubkey 
         color: "#64cb96",
         marginBottom: 3,
       }}>
-        Futuristic Portfolio Dashboard
+        Portfolio Dashboard
       </Typography>
+
+      {isTokenGated ? (
       
       <Grid container spacing={4}>
         <Grid item xs={12} md={8}>
           <Box sx={{ height: '400px', overflow: 'hidden' }}>
-            <Canvas camera={{ position: [0, 0, 20] }}>
-              <ambientLight intensity={0.5} />
-              <pointLight position={[10, 10, 10]} />
-              {portfolioData.map((token, index) => (
-                <TokenSphere 
-                  key={token.symbol} 
-                  value={Math.log(token.balance + 1)} 
-                  color={index === 0 ? '#64cb96' : '#1e88e5'}
-                  position={[(index - 0.5) * 5, 0, 0]}
-                />
-              ))}
-            </Canvas>
+          <Canvas camera={{ position: [0, -10, 15], up: [0, 0, 1], fov: 60 }}>
+  <ambientLight intensity={0.5} />
+  <pointLight position={[10, 10, 10]} />
+  <TokenPieChart tokens={portfolioData} />
+</Canvas>
           </Box>
         </Grid>
         <Grid item xs={12} md={4}>
           <Typography variant="h6" sx={{ color: "#ffffff", textShadow: "0 0 5px #64cb96" }}>
-            Total Portfolio Value: {totalValueUsd.toFixed(4)}
+            Total Portfolio Value: {totalValue.toFixed(4)}
           </Typography>
           {portfolioData.map((token) => (
             <Box key={token.symbol} sx={{ mb: 2 }}>
@@ -223,7 +226,14 @@ const RealTimeDashboard = ({ apiUrl, headers, accountPubkey, tokenAccountPubkey 
           ))}
         </Grid>
       </Grid>
-      
+      ) : (
+        // Content for users who don't have the required token
+      <Typography variant="h6" sx={{ color: "#ffffff", textShadow: "0 0 5px #64cb96" }}>
+      You need to hold the required token to access this dashboard.
+    </Typography>
+
+
+      )}
       {error && <Typography color="error">{error}</Typography>}
       
       <Button sx={{
@@ -236,7 +246,7 @@ const RealTimeDashboard = ({ apiUrl, headers, accountPubkey, tokenAccountPubkey 
           background: "linear-gradient(145deg, #1e88e5, #64cb96)",
           boxShadow: "0 4px 20px rgba(0, 176, 255, 0.6)",
         },
-      }} variant="contained" color="primary" onClick={() => { setLoading(true); fetchBalance(); fetchTokenAccountBalance(); }}>
+      }} variant="contained" color="primary" onClick={() => { setLoading(true); fetchSolBalance(); fetchTokenAccounts(); }}>
         Refresh Portfolio
       </Button>
     </Container>
