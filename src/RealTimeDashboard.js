@@ -2,6 +2,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Container, Typography, Box, Button, CircularProgress, Grid } from '@mui/material';
 import * as THREE from 'three';
 import { Canvas, useFrame } from '@react-three/fiber';
+import SniperBot from './SniperBot';
+import TokenTrader from './TokenTrader';
+
 
 const PieSlice = ({ startAngle, endAngle, radius, color }) => {
   const geometry = useMemo(() => {
@@ -74,6 +77,7 @@ const TokenPieChart = ({ tokens }) => {
 
 const RealTimeDashboard = ({ apiUrl, headers, accountPubkey, connection }) => {
   const REQUIRED_TOKEN_ADDRESS = '4RumoqmFmbX1EATWFPuVD75MGK1UxxUqJBbn4tuSpump';
+  const API_KEY = '4eoxf2smJvPYr9lbOYwc_v_VYdph4Ghi';
 
   const [solBalance, setSolBalance] = useState(null);
   const [tokenHoldings, setTokenHoldings] = useState([]);
@@ -225,6 +229,8 @@ const RealTimeDashboard = ({ apiUrl, headers, accountPubkey, connection }) => {
             </Box>
           ))}
         </Grid>
+        {/* <SniperBot/> */}
+        <TokenTrader apiKey={API_KEY} apiUrl={apiUrl}/>
       </Grid>
       ) : (
         // Content for users who don't have the required token

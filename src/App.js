@@ -38,96 +38,96 @@ function App({ walletConnected, walletPublicKey, connection }) {
     }
   }, [walletConnected, walletPublicKey]);
 
-  useEffect(() => {
-    const fetchTokenInfo = async () => {
-      const mintPubkey = new PublicKey(tokenAddress);
+  // useEffect(() => {
+  //   const fetchTokenInfo = async () => {
+  //     const mintPubkey = new PublicKey(tokenAddress);
 
-      try {
-        const response = await fetch(API_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${API_KEY}`,
-          },
-          body: JSON.stringify({
-            jsonrpc: "2.0",
-            id: 1,
-            method: "getAccountInfo",
-            params: [
-              mintPubkey.toBase58(),
-              {
-                encoding: "base64"
-              }
-            ],
-          }),
-        });
+  //     try {
+  //       const response = await fetch(API_URL, {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'Authorization': `Bearer ${API_KEY}`,
+  //         },
+  //         body: JSON.stringify({
+  //           jsonrpc: "2.0",
+  //           id: 1,
+  //           method: "getAccountInfo",
+  //           params: [
+  //             mintPubkey.toBase58(),
+  //             {
+  //               encoding: "base64"
+  //             }
+  //           ],
+  //         }),
+  //       });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+  //       if (!response.ok) {
+  //         throw new Error(`HTTP error! status: ${response.status}`);
+  //       }
 
-        const result = await response.json();
-        console.log(result);
+  //       const result = await response.json();
+  //       console.log(result);
         
-        const accountData = result.result?.value?.data[0];
+  //       const accountData = result.result?.value?.data[0];
 
-        if (!accountData) {
-          throw new Error('No account data found.');
-        }
+  //       if (!accountData) {
+  //         throw new Error('No account data found.');
+  //       }
     
-        const decodedData = Buffer.from(accountData, 'base64');
-        const humanReadableData = parseTokenAccountData(decodedData);
+  //       const decodedData = Buffer.from(accountData, 'base64');
+  //       const humanReadableData = parseTokenAccountData(decodedData);
     
-        console.log('Token Info:', humanReadableData);
-        setData(humanReadableData);
-      } catch (error) {
-        console.error('Error fetching token info:', error);
-        setError(error.message);
-      }
-    };
+  //       console.log('Token Info:', humanReadableData);
+  //       setData(humanReadableData);
+  //     } catch (error) {
+  //       console.error('Error fetching token info:', error);
+  //       setError(error.message);
+  //     }
+  //   };
 
-    fetchTokenInfo();
-  }, []);
+  //   fetchTokenInfo();
+  // }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(API_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            jsonrpc: "2.0",
-            id: 1,
-            method: "getBlockHeight",
-            params: [],
-          }),
-        });
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch(API_URL, {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: JSON.stringify({
+  //           jsonrpc: "2.0",
+  //           id: 1,
+  //           method: "getBlockHeight",
+  //           params: [],
+  //         }),
+  //       });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+  //       if (!response.ok) {
+  //         throw new Error(`HTTP error! status: ${response.status}`);
+  //       }
 
-        const result = await response.json();
-        setData(result);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  //       const result = await response.json();
+  //       setData(result);
+  //     } catch (error) {
+  //       setError(error.message);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  // if (error) {
+  //   return <div>Error: {error}</div>;
+  // }
 
   function parseTokenAccountData(data) {
     const accountInfo = {

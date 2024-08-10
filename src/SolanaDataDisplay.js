@@ -90,10 +90,11 @@ const SolanaDataDisplay = ({ apiUrl, method, params, headers }) => {
   return (
     <Container maxWidth="sm" sx={{ py: 4, textAlign: 'center' }}>
       <Typography sx={{
-          fontWeight: "bold",
-          textShadow: "0 0 5px rgba(255,255,255,0.8), 0 0 10px rgba(255,255,255,0.6)",
-          color: "#64cb96",
-          marginBottom: 3,}} variant="h4" gutterBottom align="center" color="primary">
+        fontWeight: "bold",
+        textShadow: "0 0 5px rgba(255,255,255,0.8), 0 0 10px rgba(255,255,255,0.6)",
+        color: "#64cb96",
+        marginBottom: 3,
+      }} variant="h4" gutterBottom align="center" >
         Token Supply Counter
       </Typography>
       <Typography sx={{ color: "#ffffff", textShadow: "0 0 5px #64cb96" }} variant="h6" gutterBottom align="center" color="primary">
