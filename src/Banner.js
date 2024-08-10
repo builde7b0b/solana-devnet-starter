@@ -40,7 +40,7 @@ const Banner = () => {
       <AppBar position="absolute" color="" sx={{ top: 0, zIndex: 2 }}>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            SolSeaScan
+           Solana Starter
           </Typography>
           <Button color="inherit">Home</Button>
           <Button  color="inherit">Features</Button>
@@ -65,10 +65,10 @@ const Banner = () => {
        {/* Content inside the banner */}
       <Container sx={{ position: 'relative', zIndex: 2, textAlign: 'center' }}>
         <Typography variant="h3" align="center" gutterBottom sx={{ color: '#fff', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)' }}>
-          SolSeaScan
+         Solana Starter
         </Typography>
         <Typography variant="h6" align="center" sx={{ color: '#fff', textShadow: '1px 1px 3px rgba(0, 0, 0, 0.7)' }}>
-          SolSeaScan is your compass in the Solana ocean, guiding you through the treacherous waters to discover hidden treasures and untapped opportunities. Set sail with us and master the art of high-stakes crypto trading. 🏴‍☠️🌊
+         
         </Typography>
       </Container>
     </Box>

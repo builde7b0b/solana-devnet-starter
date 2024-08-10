@@ -101,7 +101,7 @@ const SolanaDataDisplay = ({ apiUrl, method, params, headers }) => {
         $CORSAIR
       </Typography>
       {/* Token Logo Image */}
-      <Avatar
+      {/* <Avatar
         src="https://cryptocorsair.org/assets/flint-face.png" // Replace with your actual image path
         alt="Token Logo"
         sx={{
@@ -111,7 +111,7 @@ const SolanaDataDisplay = ({ apiUrl, method, params, headers }) => {
           boxShadow: "0 4px 8px rgba(0, 176, 255, 0.5)",
           backgroundColor: "#fff",
         }}
-      />
+      /> */}
       <Paper elevation={3} sx={{ p: 4, backgroundColor: '#d1d68b' }}>
         <Box sx={{ overflowX: 'auto' }}>
           {error ? (

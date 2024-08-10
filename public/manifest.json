@@ -1,6 +1,6 @@
 {
-  "short_name": "SolSeaScan",
-  "name": "Solana Sea Scan Blockchain API Explorer",
+  "short_name": "solana starter",
+  "name": "Solana  Blockchain API Explorer",
   "icons": [
     {
       "src": "favicon.ico",
