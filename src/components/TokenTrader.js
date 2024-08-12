@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Connection, Transaction, SystemProgram, PublicKey } from '@solana/web3.js';
 import { TextField, Button, Typography, Box, Container, Avatar } from '@mui/material';
-import SniperImage from './assets/sniper.png';
+import SniperImage from '../assets/sniper.png';
 
 
 const TokenTrader = ({ sellPublicKey }) => {

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Typography, Paper, Box, CircularProgress, Avatar } from '@mui/material';
 
-import { fetchHeliusData } from '../public/HeliusAPI';
+import { fetchHeliusData } from '../../public/HeliusAPI';
 
 // Example component to fetch and display Solana API data
 const SolanaDataDisplay = ({ apiUrl, method, params, headers }) => {
@@ -10,7 +10,7 @@ const SolanaDataDisplay = ({ apiUrl, method, params, headers }) => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [holders, setHolders] = useState(null);
-  const apiKey = "78ce517d-1982-48f7-b4ca-0ada28f0a326"
+  // const apiKey = "78ce517d-1982-48f7-b4ca-0ada28f0a326"
 
 
   function parseApiResponse(response, method) {
@@ -101,7 +101,7 @@ const SolanaDataDisplay = ({ apiUrl, method, params, headers }) => {
         $CORSAIR
       </Typography>
       {/* Token Logo Image */}
-      {/* <Avatar
+      <Avatar
         src="https://cryptocorsair.org/assets/flint-face.png" // Replace with your actual image path
         alt="Token Logo"
         sx={{
@@ -111,7 +111,7 @@ const SolanaDataDisplay = ({ apiUrl, method, params, headers }) => {
           boxShadow: "0 4px 8px rgba(0, 176, 255, 0.5)",
           backgroundColor: "#fff",
         }}
-      /> */}
+      />
       <Paper elevation={3} sx={{ p: 4, backgroundColor: '#d1d68b' }}>
         <Box sx={{ overflowX: 'auto' }}>
           {error ? (

@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Connection, clusterApiUrl } from '@solana/web3.js';
 import { PublicKey } from '@solana/web3.js';
 import { TOKEN_PROGRAM_ID, getAccount, getMint } from '@solana/spl-token';
-import TokenInfo from './TokenInfo';
+import TokenInfo from './components/TokenInfo';
 import { Button, Container, Typography, Paper, Box, Grid} from '@mui/material';
-import SolanaDataDisplay from './SolanaDataDisplay';
-import Banner from './Banner';
-import WalletConnection from './WalletConnection';
-import CustomWalletConnection from './CustomWalletConnection';
-import RealTimeDashboard from './RealTimeDashboard';
-import WalletPortfolio from './WalletPortfolio';
-import { useWalletContext } from './WalletContext';
+import SolanaDataDisplay from './components/SolanaDataDisplay';
+import Banner from './components/Banner';
+import WalletConnection from './components/WalletConnection';
+import CustomWalletConnection from './components/CustomWalletConnection';
+import RealTimeDashboard from './components/RealTimeDashboard';
+import WalletPortfolio from './components/WalletPortfolio';
+import { useWalletContext } from './components/WalletContext';
 
 
 function App({ walletConnected, walletPublicKey, connection }) {
