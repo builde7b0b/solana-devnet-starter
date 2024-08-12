@@ -1,9 +1,9 @@
 # Solana test app 
 
-![](./src/assets/solseascan-day2.mov)
+![](./src/assets/demo.gif)
 
 ## Description
-a work in progress setting the foundation for other apps on solana.
+a work in progress setting the foundation for other Token Gated apps on solana.
 
 ## Solana Network Libraries 
 @solana/web3.js
@@ -28,6 +28,8 @@ Wallet Connection: Users can connect their Solana wallets to interact with the b
 
 Transaction Handling: The app facilitates sending transactions and interacting with token accounts.
 ![image](./src/assets/send-transactions.png)
+![image](./src/assets/send.gif)
+
 Data Retrieval: Real-time data fetching from the Solana network, including token supplies and account information.
 ![image](./src/assets/getTokenSupply.png)
 
