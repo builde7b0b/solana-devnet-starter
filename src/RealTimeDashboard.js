@@ -76,8 +76,8 @@ const TokenPieChart = ({ tokens }) => {
 };
 
 const RealTimeDashboard = ({ apiUrl, headers, accountPubkey, connection }) => {
-  const REQUIRED_TOKEN_ADDRESS = '4RumoqmFmbX1EATWFPuVD75MGK1UxxUqJBbn4tuSpump';
-  const API_KEY = '4eoxf2smJvPYr9lbOYwc_v_VYdph4Ghi';
+  const REQUIRED_TOKEN_ADDRESS = '';
+  const API_KEY = '';
 
   const [solBalance, setSolBalance] = useState(null);
   const [tokenHoldings, setTokenHoldings] = useState([]);
@@ -124,7 +124,7 @@ const RealTimeDashboard = ({ apiUrl, headers, accountPubkey, connection }) => {
           method: "getTokenAccountsByOwner",
           params: [
             accountPubkey,
-            { programId: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" },
+            { programId: "" }, 
             { encoding: "jsonParsed" }
           ],
         }),
