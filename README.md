@@ -1,70 +1,193 @@
-# Getting Started with Create React App
+# Solana test app 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![](./src/assets/solseascan-day2.mov)
 
-## Available Scripts
+## Description
+a work in progress setting the foundation for other apps on solana.
 
-In the project directory, you can run:
+## Solana Network Libraries 
+@solana/web3.js
+@solana/wallet-adapter-base 
+@solana/wallet-adapter-react 
+@solana/wallet-adapter-wallets 
+@solana/wallet-adapter-react-ui 
+@solana/wallet-adapter-phantom
+@solana/web3.js
 
-### `npm start`
+## Additional Notes 
+Network Configuration: You can switch between the Solana mainnet and devnet for testing purposes by adjusting the network URL in the configuration
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
+## Solana Integration and Unit Testing
+### Solana Integration
+This project demonstrates integration with the Solana blockchain, enabling wallet connections, transaction handling, and data retrieval using the Solana Web3.js library and SPL Token utilities. The following features are implemented:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Wallet Connection: Users can connect their Solana wallets to interact with the blockchain.
+![image](./src/assets/wallet-connection.png)
 
-### `npm run build`
+Transaction Handling: The app facilitates sending transactions and interacting with token accounts.
+![image](./src/assets/send-transactions.png)
+Data Retrieval: Real-time data fetching from the Solana network, including token supplies and account information.
+![image](./src/assets/getTokenSupply.png)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Key Libraries Used
+@solana/web3.js: Official Solana JavaScript API for interacting with the blockchain.
+@solana/spl-token: Utilities for interacting with the Solana Program Library (SPL) tokens.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Solana Configuration
+The app is configured to connect to the Solana mainnet using an API service. Ensure that you set up the API key and endpoints correctly:
+```
+const API_URL = `https://solana-mainnet.g.alchemy.com/v2/${API_KEY}`;
+const headers = {
+  'Content-Type': 'application/json',
+  'Authorization': `Bearer ${API_KEY}`,
+};
 
-### `npm run eject`
+```
+Replace API_KEY with your actual API key from a Solana API provider, such as Alchemy or Helium/Quicknode.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Unit Testing
+Unit tests are implemented using Jest and React Testing Library to ensure the reliability and correctness of individual components and logic within the application.
 
-## Learn More
+### Key Testing Libraries
+Jest: A JavaScript testing framework used to run tests and provide utilities for creating test suites.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+React Testing Library: A library for testing React components with a focus on user interactions and behavior.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Testing Setup
+To set up the testing environment, ensure you have installed the necessary dependencies:
+npm install --save-dev @testing-library/react @testing-library/jest-dom jest
 
-### Code Splitting
+### Test Files
+App.test.js: Contains tests for the main application component, verifying rendering logic and interactions
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Running Unit Tests
+To execute the unit tests, use the following command
+`npm test`
 
-### Analyzing the Bundle Size
+This command runs all tests and outputs the results in the terminal, showing which tests passed or failed.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Test Coverage
+Rendering Logic: Tests ensure that all components render correctly based on different application states (e.g., wallet connected, loading, error).
 
-### Making a Progressive Web App
+User Interactions: Simulates user actions like clicking buttons and entering text to verify the app's response.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Mocked Blockchain Interactions: Tests mock Solana network interactions to ensure the application logic handles API calls and responses correctly without needing an actual blockchain connection.
 
-### Advanced Configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
-### Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## NODE FOR SOLANA
+Alchemy 
+https://dashboard.alchemy.com/products/node-api
 
-### `npm run build` fails to minify
+https://solana-devnet.g.alchemy.com/v2/
+https://solana-mainnet.g.alchemy.com/v2/[API SECRET]
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+## Other Resources
+Solana API Endpoints 
+https://docs.alchemy.com/reference/solana-api-endpoints
+
+Solana Quickstart Guide 
+https://docs.alchemy.com/reference/solana-api-quickstart
+
+Alchemy Node API - write data to the blockchain 
+https://dashboard.alchemy.com/products/node-api
+
+Solscan
+https://solscan.io/apis
+https://public-api.solscan.io/docs/#/
+https://pro-api.solscan.io/pro-api-docs/v2.0/reference/block-last
+
+### Examples of Outputs: 
+###
+Here is an exxample of how the supply is returned to us: 
+
+
+```
+{
+  "jsonrpc": "2.0",
+  "result": {
+    "context": {
+      "apiVersion": "1.18.18",
+      "slot": 281542389
+    },
+    "value": {
+      "circulating": 465476284365400600,
+      "nonCirculating": 116019818075693970,
+      "nonCirculatingAccounts": [
+        "GL7uXybnSKcq4dbrksGJursw9fAm8jA76ZeXQRNpRMqd",
+        "Bu9DLx9ftgBzVBzLhMBXJYqJqYkYX6KDQFFMHbEGQ4c1",
+        "2Hnv39uYe4TxCe5Ut6UDiMLAYqZkeDhjn9hGDVyF9eGw",
+        "8jvWVRseiF9WrhX6YMLvBqTvEMK83cQPjet46jAUYUcJ",
+        "CvgihzdzMRwfdAXkE3imwM6GVTUgSDCh7eSWK7wQygRu",
+        "5Zq4v
+```
+
+getTokenSupply
+```
+{
+    "jsonrpc": "2.0",
+    "result": {
+        "context": {
+            "slot": 137571639
+        },
+        "value": {
+            "amount": "999999999997060679",
+            "decimals": 9,
+            "uiAmount": 9.999999999970608E8,
+            "uiAmountString": "999999999.997060679"
+        }
+    },
+    "id": 1
+}
+```
+
+
+## Alchemy Endpoints 
+
+getBalance
+Returns the balance of the account of provided Pubkey.
+https://docs.alchemy.com/reference/getbalance
+
+getProgramAccounts - PAID ONLY
+Returns all accounts owned by the provided program Pubkey.
+https://docs.alchemy.com/reference/getprogramaccounts
+
+getTokenAccountBalance
+Returns the token balance of an SPL Token account..
+https://docs.alchemy.com/reference/gettokenaccountbalance
+```
+Response: {
+    "jsonrpc": "2.0",
+    "result": {
+        "context": {
+            "slot": 137567036
+        },
+        "value": {
+            "amount": "301922375078",
+            "decimals": 6,
+            "uiAmount": 301922.375078,
+            "uiAmountString": "301922.375078"
+        }
+    },
+    "id": "017a141e-9a15-4ce3-b039-865e7dc7da00"
+}
+```
+
+
+
+
+# What's Next: 
+## Sending Transactions with Solana CLI
+The Solana Command-Line Interface (CLI) provides a robust way to interact with the Solana blockchain.
+
+## Transaction Signing and Sending:
+
+The standard way of sending transactions on Solana is to sign a transaction locally using a wallet, serialize it, and then send it to the Solana cluster.
