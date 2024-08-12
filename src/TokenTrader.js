@@ -11,7 +11,7 @@ const TokenTrader = ({ sellPublicKey }) => {
     const [tokenAddress, setTokenAddress] = useState('');
 
     // Direct connection to Solana mainnet
-    const connection = new Connection('https://mainnet.helius-rpc.com/?api-key=78ce517d-1982-48f7-b4ca-0ada28f0a326', 'confirmed');
+    const connection = new Connection('https://mainnet.helius-rpc.com/?api-key=', 'confirmed');
 
     const snipeToken = async () => {
         if (!publicKey) {
